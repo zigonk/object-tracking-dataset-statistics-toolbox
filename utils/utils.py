@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def compute_iou(bbox1, bbox2):
     """
     Compute the intersection over union (IoU) of two bounding boxes
@@ -24,9 +25,10 @@ def compute_iou(bbox1, bbox2):
     union_area = bbox1_area+bbox2_area-intersection_area
 
     # Compute the IoU
-    iou = intersection_area/union_area
+    iou = intersection_area/(union_area + 1e-8)
 
     return iou
+
 
 def compute_distr_and_avg(data, bins=5):
     hist, bin_edges = np.histogram(data, bins=bins)
