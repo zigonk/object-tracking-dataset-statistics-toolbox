@@ -12,6 +12,11 @@ def compute_iou(bbox1, bbox2):
     Returns:
         iou: IoU of bbox1 and bbox2
     """
+    # Convert xywh to x1y1x2y2
+    bbox1 = np.array([bbox1[0], bbox1[1], bbox1[0] +
+                     bbox1[2], bbox1[1]+bbox1[3]])
+    bbox2 = np.array([bbox2[0], bbox2[1], bbox2[0] +
+                     bbox2[2], bbox2[1]+bbox2[3]])
     # Compute the intersection area
     x1 = max(bbox1[0], bbox2[0])
     y1 = max(bbox1[1], bbox2[1])
@@ -33,4 +38,4 @@ def compute_iou(bbox1, bbox2):
 def compute_distr_and_avg(data, bins=5):
     hist, bin_edges = np.histogram(data, bins=bins)
     avg = np.mean(data)
-    return hist, bin_edges, avg
+    return hist / np.sum(hist), bin_edges, avg

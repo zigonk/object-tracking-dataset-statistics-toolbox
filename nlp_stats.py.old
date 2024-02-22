@@ -1,0 +1,45 @@
+import glob
+import json
+import os
+import nltk
+from nltk.corpus import wordnet as wn
+
+import matplotlib.pyplot as plt
+from wordcloud import STOPWORDS, WordCloud
+
+
+stopwords = set(STOPWORDS)
+
+dataset = 'dataset'
+
+query_files = sorted(glob.glob(os.path.join(
+    dataset, '**/*.json'), recursive=True))
+
+subject_word = []
+attribute_words = []
+# st = StanfordPOSTagger('english-bidirectional-distsim.tagger')
+for query_file in query_files:
+    with open(query_file, 'r') as f:
+        print(query_file)
+        annos = json.load(f)
+        for anno in annos:
+            # Get subject in caption using NLTK wn
+            caption = anno['caption']
+            # Get 3 words before and after the subject
+            tokens = nltk.word_tokenize(caption)
+            pos_tags = nltk.pos_tag(tokens)
+            for word, pos in pos_tags:
+                if pos == 'NN':
+                    subject_word.append(word)
+                    break
+            # Get attribute in caption using NLTK wn
+            for word, pos in pos_tags:
+                if pos == 'JJ':
+                    attribute_words.append(word)
+                    break
+
+
+WordCloud(stopwords=stopwords, collocations=False, background_color='white').generate(' '.join(subject_word)).to_file(
+    'output/subject_wordcloud.png')
+WordCloud(stopwords=stopwords, collocations=False, background_color='white').generate(' '.join(attribute_words)).to_file(
+    'output/attribute_wordcloud.png')
